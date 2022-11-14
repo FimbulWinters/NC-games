@@ -4,11 +4,11 @@ exports.selectCategories = () => {
   return db
     .query(
       `
-  
-  SELECT * FROM categories
+  SELECT * FROM categories;
     `,
     )
     .then((results) => {
       return results.rows;
-    });
+    })
+    .catch(console.log);
 };
