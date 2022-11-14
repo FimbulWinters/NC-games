@@ -10,5 +10,5 @@ exports.selectCategories = () => {
     .then((results) => {
       return results.rows;
     })
-    .catch(console.log);
+    .catch(next);
 };
