@@ -38,4 +38,29 @@ describe("GET", () => {
         });
     });
   });
+  describe.only("GET /api/reviews", () => {
+    test("returns all the reviews", () => {
+      return request(app)
+        .get("/api/reviews")
+        .expect(200)
+        .then((result) => {
+          expect(result.body.reviews).toBeInstanceOf(Array);
+          result.body.reviews.forEach((reviews) => {
+            expect(result.body.reviews.length).toBeGreaterThan(0);
+            expect(reviews).toEqual({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: expect.any(String),
+              review_img_url: expect.any(String),
+              review_body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(String),
+            });
+          });
+        });
+    });
+  });
 });
