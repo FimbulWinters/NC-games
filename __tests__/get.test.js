@@ -45,8 +45,8 @@ describe("GET", () => {
         .expect(200)
         .then((result) => {
           expect(result.body.reviews).toBeInstanceOf(Array);
+          expect(result.body.reviews.length).toBeGreaterThan(0);
           result.body.reviews.forEach((reviews) => {
-            expect(result.body.reviews.length).toBeGreaterThan(0);
             expect(reviews).toEqual({
               owner: expect.any(String),
               title: expect.any(String),
