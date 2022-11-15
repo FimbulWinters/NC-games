@@ -86,12 +86,20 @@ describe("GET /api/reviews/:review_id", () => {
       });
   });
   describe("errors", () => {
-    test.only("should return 404: review not found when provided an id that is valid but doesnt exist", () => {
+    test("should return 404: review not found when provided an id that is valid but doesnt exist", () => {
       return request(app)
         .get("/api/reviews/1000000")
         .expect(404)
         .then(({ body }) => {
           expect(body.message).toBe("Review not found!");
+        });
+    });
+    test("should return 400: bad request when given an invalid id", () => {
+      return request(app)
+        .get("/api/reviews/hello")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Bad request!");
         });
     });
   });
