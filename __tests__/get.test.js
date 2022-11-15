@@ -26,18 +26,15 @@ describe("GET", () => {
         .expect(200)
         .then((result) => {
           expect(result.body.categories).toBeInstanceOf(Array);
-          if (result.body.categories.length === 0) {
-            fail("no results");
-          } else {
-            result.body.categories.forEach((category) => {
-              expect(category).toEqual(
-                expect.objectContaining({
-                  slug: expect.any(String),
-                  description: expect.any(String),
-                }),
-              );
-            });
-          }
+          expect(result.body.categories.length).toBeGreaterThan(0);
+          result.body.categories.forEach((category) => {
+            expect(category).toEqual(
+              expect.objectContaining({
+                slug: expect.any(String),
+                description: expect.any(String),
+              }),
+            );
+          });
         });
     });
   });

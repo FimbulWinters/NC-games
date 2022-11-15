@@ -9,6 +9,5 @@ exports.selectCategories = () => {
     )
     .then((results) => {
       return results.rows;
-    })
-    .catch(next);
+    });
 };
