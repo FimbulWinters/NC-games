@@ -7,8 +7,7 @@ exports.selectCategories = () => {
   SELECT * FROM categories;
     `,
     )
-    .then((results, err) => {
-      if (err) err;
+    .then((results) => {
       return results.rows;
     });
 };

@@ -5,5 +5,7 @@ exports.getCategories = (req, res) => {
     .then((categories) => {
       res.send({ categories });
     })
-    .catch();
+    .catch((err) => {
+      next(err);
+    });
 };
