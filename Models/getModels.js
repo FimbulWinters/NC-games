@@ -24,3 +24,16 @@ exports.selectReviews = () => {
       return results.rows;
     });
 };
+exports.selectReviewById = (id) => {
+  return db
+    .query(
+      `
+      SELECT * FROM reviews WHERE review_id = $1;
+    
+    `,
+      [id],
+    )
+    .then((res) => {
+      return res.rows;
+    });
+};
