@@ -64,7 +64,7 @@ describe("GET /api/reviews", () => {
 });
 
 describe("GET /api/reviews/:review_id", () => {
-  test.only("should return all the reviews with a given id", () => {
+  test("should return all the reviews with a given id", () => {
     return request(app)
       .get("/api/reviews/1")
       .expect(200)
@@ -84,5 +84,15 @@ describe("GET /api/reviews/:review_id", () => {
           owner: "mallionaire",
         });
       });
+  });
+  describe("errors", () => {
+    test.only("should return 404: review not found when provided an id that is valid but doesnt exist", () => {
+      return request(app)
+        .get("/api/reviews/1000000")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("Review not found!");
+        });
+    });
   });
 });

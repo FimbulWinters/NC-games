@@ -1,5 +1,5 @@
 const express = require("express");
-const { catchAll } = require("./Controllers/errorsController");
+const { catchAll, customErrors } = require("./Controllers/errorsController");
 const {
   getCategories,
   getReviews,
@@ -19,6 +19,8 @@ app.all("/*", (req, res) => {
 });
 
 // ERRORS
+
+app.use(customErrors);
 
 app.use(catchAll);
 
