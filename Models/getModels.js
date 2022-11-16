@@ -24,3 +24,20 @@ exports.selectReviews = () => {
       return results.rows;
     });
 };
+exports.selectReviewById = (id) => {
+  return db
+    .query(
+      `
+      SELECT * FROM reviews WHERE review_id = $1;
+    
+    `,
+      [id],
+    )
+    .then((res) => {
+      if (res.rows.length === 0) {
+        return Promise.reject({ status: 404, message: "Review not found!" });
+      } else {
+        return res.rows;
+      }
+    });
+};
