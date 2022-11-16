@@ -6,8 +6,10 @@ const {
   getReviewById,
   getCommentsByReviewID,
 } = require("./Controllers/getController");
+const { postCommentToReview } = require("./Controllers/postController");
 
 const app = express();
+app.use(express.json());
 
 // GET
 
@@ -16,6 +18,10 @@ app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewID);
 
+// POST
+app.post("/api/reviews/:review_id/comments", postCommentToReview);
+
+// all others
 app.all("/*", (req, res) => {
   res.status(404).send({ message: "invalid url" });
 });
