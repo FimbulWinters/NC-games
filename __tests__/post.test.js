@@ -27,6 +27,25 @@ describe("POST /api/reviews/:review_id/comments", () => {
           });
         });
     });
+    test("should ignore unnecessary information sent in the request and respond with 201", () => {
+      return request(app)
+        .post("/api/reviews/2/comments")
+        .send({
+          username: "mallionaire",
+          votes: 7,
+          body: "I love this testing thing",
+        })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.comment).toMatchObject({
+            comment_id: expect.any(Number),
+            review_id: 2,
+            votes: expect.any(Number),
+            username: "mallionaire",
+            body: "I love this testing thing",
+          });
+        });
+    });
   });
   describe("Sad path", () => {
     test("return 404 when given a valid but non-existent id", () => {
@@ -51,6 +70,29 @@ describe("POST /api/reviews/:review_id/comments", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.message).toBe("Bad request!");
+        });
+    });
+    test("status 400 when missing username or body in request", () => {
+      return request(app)
+        .post("/api/reviews/avacado/comments")
+        .send({
+          body: "I love this testing thing",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Bad request!");
+        });
+    });
+    test("invalid username should return 404", () => {
+      return request(app)
+        .post("/api/reviews/2/comments")
+        .send({
+          username: "winnie the pooh",
+          body: "I love this testing thing",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("Username not found");
         });
     });
   });
