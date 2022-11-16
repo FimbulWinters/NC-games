@@ -41,3 +41,16 @@ exports.selectReviewById = (id) => {
       }
     });
 };
+
+exports.selectCommentsByReviewId = (id) => {
+  return db
+    .query(
+      `
+      SELECT * FROM comments WHERE review_id = $1;
+    `,
+      [id],
+    )
+    .then((res) => {
+      return res.rows;
+    });
+};

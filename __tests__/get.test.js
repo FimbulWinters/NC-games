@@ -104,3 +104,25 @@ describe("GET /api/reviews/:review_id", () => {
     });
   });
 });
+
+describe("Get /api/reviews/:review_id/comments", () => {
+  describe("Happy path", () => {
+    test("Should return comments relating to a given review", () => {
+      return request(app)
+        .get("/api/reviews/2/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toBeInstanceOf(Array);
+          expect(body.comments.length).toBeGreaterThan(0);
+          expect(body.comments[0]).toEqual({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            review_id: 2,
+          });
+        });
+    });
+  });
+});
