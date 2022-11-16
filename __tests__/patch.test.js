@@ -67,4 +67,24 @@ describe("PATCH /api/reviews/:review_id", () => {
         });
     });
   });
+  describe("Sad path", () => {
+    test("will return error 404 when given a valid but non-existent id", () => {
+      return request(app)
+        .patch("/api/reviews/525894")
+        .send({ inc_votes: -1 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("Review not found");
+        });
+    });
+    test("will return error 400 when given a non valid id", () => {
+      return request(app)
+        .patch("/api/reviews/squirrel")
+        .send({ inc_votes: -1 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Bad request!");
+        });
+    });
+  });
 });
