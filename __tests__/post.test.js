@@ -28,4 +28,30 @@ describe("POST /api/reviews/:review_id/comments", () => {
         });
     });
   });
+  describe("Sad path", () => {
+    test("return 404 when given a valid but non-existent id", () => {
+      return request(app)
+        .post("/api/reviews/521454/comments")
+        .send({
+          username: "mallionaire",
+          body: "I love this testing thing",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("Review not found");
+        });
+    });
+    test("should return error 400 when provided an invalid id", () => {
+      return request(app)
+        .post("/api/reviews/avacado/comments")
+        .send({
+          username: "mallionaire",
+          body: "I love this testing thing",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Bad request!");
+        });
+    });
+  });
 });
