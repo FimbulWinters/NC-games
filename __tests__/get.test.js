@@ -104,3 +104,51 @@ describe("GET /api/reviews/:review_id", () => {
     });
   });
 });
+
+describe("Get /api/reviews/:review_id/comments", () => {
+  describe("Happy path", () => {
+    test("Should return comments relating to a given review", () => {
+      return request(app)
+        .get("/api/reviews/2/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toBeInstanceOf(Array);
+          expect(body.comments.length).toBeGreaterThan(0);
+          expect(body.comments[0]).toEqual({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            review_id: 2,
+          });
+        });
+    });
+    test("Should return empty array of comments when given a valid review id by there are no comments on that id ", () => {
+      return request(app)
+        .get("/api/reviews/10/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toEqual([]);
+        });
+    });
+  });
+  describe("Sad Path", () => {
+    test("Should return error 404 when given a valid but non-existent id", () => {
+      return request(app)
+        .get("/api/reviews/10000/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("Review not found");
+        });
+    });
+    test("Should return error 400 when given an invalid id", () => {
+      return request(app)
+        .get("/api/reviews/sponge/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Bad request!");
+        });
+    });
+  });
+});

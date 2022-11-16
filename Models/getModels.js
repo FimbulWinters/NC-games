@@ -1,5 +1,8 @@
 const db = require("../db/connection");
-const { convertTimestampToDate } = require("../db/seeds/utils");
+const {
+  convertTimestampToDate,
+  doesReviewExist,
+} = require("../db/seeds/utils");
 
 exports.selectCategories = () => {
   return db
@@ -39,5 +42,20 @@ exports.selectReviewById = (id) => {
       } else {
         return res.rows;
       }
+    });
+};
+
+exports.selectCommentsByReviewId = (id) => {
+  return doesReviewExist(id)
+    .then(() => {
+      return db.query(
+        `
+      SELECT * FROM comments WHERE review_id = $1;
+    `,
+        [id],
+      );
+    })
+    .then((res) => {
+      return res.rows;
     });
 };
