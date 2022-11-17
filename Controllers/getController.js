@@ -17,7 +17,6 @@ exports.getCategories = (req, res) => {
 };
 exports.getReviews = (req, res, next) => {
   const { category, sort_by, order } = req.query;
-  console.log();
 
   selectReviews(category, sort_by, order, req.query)
     .then((reviews) => {
