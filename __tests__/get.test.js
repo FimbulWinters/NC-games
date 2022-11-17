@@ -46,7 +46,7 @@ describe("GET /api/reviews", () => {
         expect(result.body.reviews).toBeInstanceOf(Array);
         expect(result.body.reviews.length).toBeGreaterThan(0);
         result.body.reviews.forEach((reviews) => {
-          expect(reviews).toEqual({
+          expect(reviews).toMatchObject({
             owner: expect.any(String),
             title: expect.any(String),
             review_id: expect.any(Number),
@@ -60,6 +60,73 @@ describe("GET /api/reviews", () => {
           });
         });
       });
+  });
+  describe("queries", () => {
+    test("categories", () => {
+      return request(app)
+        .get("/api/reviews?category=dexterity")
+        .expect(200)
+        .then((result) => {
+          expect(result.body.reviews).toBeInstanceOf(Array);
+          expect(result.body.reviews.length).toBeGreaterThan(0);
+          result.body.reviews.forEach((reviews) => {
+            expect(reviews).toMatchObject({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: "dexterity",
+              review_img_url: expect.any(String),
+              review_body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(String),
+            });
+          });
+        });
+    });
+    test("sort_by", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=owner")
+        .expect(200)
+        .then((result) => {
+          expect(result.body.reviews).toBeInstanceOf(Array);
+          expect(result.body.reviews.length).toBeGreaterThan(0);
+          expect(result.body.reviews[0]).toMatchObject({
+            owner: "bainesface",
+            title: expect.any(String),
+            review_id: 3,
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            review_body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(String),
+          });
+        });
+    });
+    test("order", () => {
+      return request(app)
+        .get("/api/reviews?order=desc")
+        .expect(200)
+        .then((result) => {
+          expect(result.body.reviews).toBeInstanceOf(Array);
+          expect(result.body.reviews.length).toBeGreaterThan(0);
+          expect(result.body.reviews[0]).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: 13,
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            review_body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(String),
+          });
+        });
+    });
   });
 });
 

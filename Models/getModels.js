@@ -16,16 +16,49 @@ exports.selectCategories = () => {
     });
 };
 
-exports.selectReviews = () => {
-  return db
-    .query(
-      `
-      SELECT *, COUNT(review_id) AS comment_count FROM reviews group by review_id;
-  `,
-    )
-    .then((results) => {
-      return results.rows;
-    });
+exports.selectReviews = (categories, sortBy, order) => {
+  const allowed = [
+    "owner",
+    "title",
+    "review_id",
+    "category",
+    "review_img_url",
+    "review_body",
+    "created_at",
+    "votes",
+    "designer",
+    "comment_count",
+    "asc",
+    "desc",
+  ];
+
+  const queries = [];
+  let queryString = "SELECT *, COUNT(review_id) AS comment_count FROM reviews ";
+
+  if (categories) {
+    queryString += "WHERE category = $1 ";
+    queries.push(categories);
+  }
+
+  queryString += "GROUP BY review_id ";
+
+  if (sortBy) {
+    if (!allowed.includes(sortBy)) {
+      return Promise.reject({ status: 400, message: "invalid query" });
+    }
+    queryString += `ORDER BY ${sortBy}`;
+  }
+  if (order) {
+    if (!allowed.includes(order)) {
+      return Promise.reject({ status: 400, message: "invalid query" });
+    }
+    queryString += `ORDER BY review_id ${order.toUpperCase()}`;
+  }
+  console.log(queryString);
+
+  return db.query(queryString, queries).then((results) => {
+    return results.rows;
+  });
 };
 exports.selectReviewById = (id) => {
   return db

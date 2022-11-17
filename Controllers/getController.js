@@ -16,7 +16,9 @@ exports.getCategories = (req, res) => {
     });
 };
 exports.getReviews = (req, res) => {
-  selectReviews().then((reviews) => {
+  const { category, sort_by, order } = req.query;
+
+  selectReviews(category, sort_by, order).then((reviews) => {
     res.send({ reviews });
   });
 };
