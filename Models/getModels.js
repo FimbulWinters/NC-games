@@ -40,14 +40,12 @@ exports.selectReviewById = (id) => {
       [id],
     )
     .then((result) => {
-      console.log(result.rows);
       if (result.rows.length !== 0) {
         return result.rows;
       } else {
         return db
           .query(`SELECT * FROM reviews WHERE review_id = $1`, [id])
           .then((res) => {
-            console.log(res.rows);
             if (res.rows.length === 0) {
               return Promise.reject({
                 status: 404,
