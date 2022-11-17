@@ -7,6 +7,8 @@ const {
   getCommentsByReviewID,
   getUsers,
 } = require("./Controllers/getController");
+
+const { patchReviewVotes } = require("./Controllers/patchController");
 const { postCommentToReview } = require("./Controllers/postController");
 
 const app = express();
@@ -20,10 +22,15 @@ app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewID);
 app.get("/api/users", getUsers);
 
+
+// PATCH
+app.patch("/api/reviews/:review_id", patchReviewVotes);
+
 // POST
 app.post("/api/reviews/:review_id/comments", postCommentToReview);
 
 // all others
+
 app.all("/*", (req, res) => {
   res.status(404).send({ message: "invalid url" });
 });
