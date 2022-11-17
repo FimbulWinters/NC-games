@@ -59,3 +59,9 @@ exports.selectCommentsByReviewId = (id) => {
       return res.rows;
     });
 };
+
+exports.selectUsers = () => {
+  return db.query(`SELECT * FROM users;`).then((res) => {
+    return res.rows;
+  });
+};
