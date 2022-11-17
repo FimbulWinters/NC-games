@@ -21,7 +21,6 @@ exports.getReviews = (req, res, next) => {
   selectReviews(category, sort_by, order)
     .then((reviews) => {
       if (!reviews.length) {
-        console.log("hello");
         res.send(reviews);
       } else {
         res.send({ reviews });
