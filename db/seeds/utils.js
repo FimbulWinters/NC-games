@@ -34,7 +34,6 @@ exports.doesReviewExist = (review_id) => {
 };
 
 exports.doesUsernameExist = (username) => {
-  console.log("hello");
   return db
     .query(`SELECT * FROM users WHERE username = $1 `, [username])
     .then((result) => {
