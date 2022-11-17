@@ -86,5 +86,23 @@ describe("PATCH /api/reviews/:review_id", () => {
           expect(body.message).toBe("Bad request!");
         });
     });
+    test("Should return error 400 when missing an inc_votes object", () => {
+      return request(app)
+        .patch("/api/reviews/2")
+        .send({})
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Bad request!");
+        });
+    });
+    test("Should return error 400 when given an invalid inc_votes object", () => {
+      return request(app)
+        .patch("/api/reviews/2")
+        .send({ inc_votes: "squirrel" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Bad request!");
+        });
+    });
   });
 });
