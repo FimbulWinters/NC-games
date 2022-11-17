@@ -38,7 +38,9 @@ exports.getCommentsByReviewID = (req, res, next) => {
 };
 
 exports.getUsers = (req, res, next) => {
-  selectUsers().then((users) => {
-    res.send({ users });
-  });
+  selectUsers()
+    .then((users) => {
+      res.send({ users });
+    })
+    .catch(next);
 };
