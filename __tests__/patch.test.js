@@ -104,5 +104,14 @@ describe("PATCH /api/reviews/:review_id", () => {
           expect(body.message).toBe("Bad request!");
         });
     });
+    test("should return error 400 when inc_votes spelled incorrectly", () => {
+      return request(app)
+        .patch("/api/reviews/2")
+        .send({ in_ves: 1 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Bad request!");
+        });
+    });
   });
 });
