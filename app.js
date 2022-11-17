@@ -1,4 +1,5 @@
 const express = require("express");
+
 const { catchAll, customErrors } = require("./Controllers/errorsController");
 const {
   getCategories,
@@ -21,7 +22,6 @@ app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewID);
 app.get("/api/users", getUsers);
-
 
 // PATCH
 app.patch("/api/reviews/:review_id", patchReviewVotes);

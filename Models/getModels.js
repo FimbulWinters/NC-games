@@ -18,51 +18,58 @@ exports.selectCategories = () => {
 };
 
 exports.selectReviews = (categories, sortBy, order, query) => {
-  const allowed = [
-    "owner",
-    "title",
-    "review_id",
-    "category",
-    "review_img_url",
-    "review_body",
-    "created_at",
-    "votes",
-    "designer",
-    "comment_count",
-    "asc",
-    "desc",
-  ];
+  return doesCategoryExist(categories)
+    .then(() => {
+      const sortAllowed = [
+        "owner",
+        "title",
+        "review_id",
+        "category",
+        "review_img_url",
+        "review_body",
+        "created_at",
+        "votes",
+        "designer",
+        "comment_count",
+        "default",
+      ];
+      const orderAllowed = ["asc", "desc"];
 
-  const queries = [];
-  let queryString = "SELECT *, COUNT(review_id) AS comment_count FROM reviews ";
+      const queries = [];
+      let queryString =
+        "SELECT *, COUNT(review_id) AS comment_count FROM reviews ";
 
-  if (categories) {
-    queryString += "WHERE category = $1 ";
-    queries.push(categories);
-  }
+      if (categories) {
+        queryString += "WHERE category = $1 ";
+        queries.push(categories);
+      }
 
-  queryString += "GROUP BY review_id ";
+      queryString += "GROUP BY review_id ";
 
-  if (sortBy) {
-    if (!allowed.includes(sortBy)) {
-      return Promise.reject({ status: 400, message: "invalid query" });
-    }
-    queryString += `ORDER BY ${sortBy}`;
-  }
+      if (sortBy) {
+        if (!sortAllowed.includes(sortBy)) {
+          return Promise.reject({ status: 400, message: "invalid query" });
+        } else {
+          if (sortBy !== "default") {
+            queryString += `ORDER BY ${sortBy}`;
+          } else {
+            queryString += `ORDER BY created_at;`;
+          }
+        }
+      }
 
-  if (order) {
-    if (!allowed.includes(order)) {
-      return Promise.reject({ status: 400, message: "invalid query" });
-    }
-    queryString += `ORDER BY review_id ${order.toUpperCase()}`;
-  }
+      if (order) {
+        if (!orderAllowed.includes(order)) {
+          return Promise.reject({ status: 400, message: "invalid query" });
+        }
+        queryString += `ORDER BY review_id ${order.toUpperCase()}`;
+      }
 
-  return db.query(queryString, queries).then((results) => {
-    if (results.rows.length === 0) {
-      return Promise.reject({ status: 404, message: "Category not found" });
-    }
-    return results.rows;
-  });
+      return db.query(queryString, queries);
+    })
+    .then((results) => {
+      return results.rows;
+    });
 };
 exports.selectReviewById = (id) => {
   return db
