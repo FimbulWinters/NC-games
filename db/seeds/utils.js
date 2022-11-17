@@ -42,3 +42,13 @@ exports.doesUsernameExist = (username) => {
       }
     });
 };
+
+exports.doesCategoryExist = (category) => {
+  return db
+    .query(`SELECT * FROM categories WHERE slug = $1`, [category])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, message: "Category not found" });
+      }
+    });
+};

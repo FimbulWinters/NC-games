@@ -2,6 +2,7 @@ const db = require("../db/connection");
 const {
   convertTimestampToDate,
   doesReviewExist,
+  doesCategoryExist,
 } = require("../db/seeds/utils");
 
 exports.selectCategories = () => {
@@ -16,7 +17,7 @@ exports.selectCategories = () => {
     });
 };
 
-exports.selectReviews = (categories, sortBy, order) => {
+exports.selectReviews = (categories, sortBy, order, query) => {
   const allowed = [
     "owner",
     "title",
@@ -48,15 +49,18 @@ exports.selectReviews = (categories, sortBy, order) => {
     }
     queryString += `ORDER BY ${sortBy}`;
   }
+
   if (order) {
     if (!allowed.includes(order)) {
       return Promise.reject({ status: 400, message: "invalid query" });
     }
     queryString += `ORDER BY review_id ${order.toUpperCase()}`;
   }
-  console.log(queryString);
 
   return db.query(queryString, queries).then((results) => {
+    if (results.rows.length === 0) {
+      return Promise.reject({ status: 404, message: "Category not found" });
+    }
     return results.rows;
   });
 };

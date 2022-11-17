@@ -128,6 +128,39 @@ describe("GET /api/reviews", () => {
         });
     });
   });
+  describe("errors", () => {
+    describe("categories", () => {
+      test("return 404 when category provided doesnt exist", () => {
+        return request(app)
+          .get("/api/reviews?category=aubergine")
+          .expect(404)
+          .then((result) => {
+            expect(result.body.message).toBe("Category not found");
+          });
+      });
+      // Not valid test not required as it will be stringified anyway, and thus will always be valid
+    });
+    describe("sort by", () => {
+      test("400: sort by invalid column name", () => {
+        return request(app)
+          .get("/api/reviews?sort_by=aubergine")
+          .expect(400)
+          .then((result) => {
+            expect(result.body.message).toBe("invalid query");
+          });
+      });
+    });
+    describe("400 order by", () => {
+      test("400 order by anything by asc or desc", () => {
+        return request(app)
+          .get("/api/reviews?order=aubergine")
+          .expect(400)
+          .then((result) => {
+            expect(result.body.message).toBe("invalid query");
+          });
+      });
+    });
+  });
 });
 
 describe("GET /api/reviews/:review_id", () => {
