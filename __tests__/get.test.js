@@ -66,6 +66,27 @@ describe("GET /api/reviews", () => {
 describe("GET /api/reviews/:review_id", () => {
   test("should return all the reviews with a given id", () => {
     return request(app)
+      .get("/api/reviews/2")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.review).toBeInstanceOf(Array);
+        expect(body.review.length).toBeGreaterThan(0);
+        expect(body.review[0]).toEqual({
+          review_id: 2,
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          category: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          owner: expect.any(String),
+          comment_count: expect.any(String),
+        });
+      });
+  });
+  test("should return the review without comment count column where there are no comments", () => {
+    return request(app)
       .get("/api/reviews/1")
       .expect(200)
       .then(({ body }) => {
@@ -73,18 +94,18 @@ describe("GET /api/reviews/:review_id", () => {
         expect(body.review.length).toBeGreaterThan(0);
         expect(body.review[0]).toEqual({
           review_id: 1,
-          title: "Agricola",
-          review_body: "Farmyard fun!",
-          designer: "Uwe Rosenberg",
-          review_img_url:
-            "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
-          category: "euro game",
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          category: expect.any(String),
           created_at: expect.any(String),
-          votes: 1,
-          owner: "mallionaire",
+          votes: expect.any(Number),
+          owner: expect.any(String),
         });
       });
   });
+
   describe("errors", () => {
     test("should return 404: review not found when provided an id that is valid but doesnt exist", () => {
       return request(app)

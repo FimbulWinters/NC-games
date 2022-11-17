@@ -31,16 +31,32 @@ exports.selectReviewById = (id) => {
   return db
     .query(
       `
-      SELECT * FROM reviews WHERE review_id = $1;
+      SELECT reviews.*,COUNT(comment_id) AS comment_count FROM reviews
+      JOIN comments ON reviews.review_id = comments.review_id
+      WHERE reviews.review_id = $1
+      GROUP BY reviews.review_id, comments.comment_id;
     
     `,
       [id],
     )
-    .then((res) => {
-      if (res.rows.length === 0) {
-        return Promise.reject({ status: 404, message: "Review not found!" });
+    .then((result) => {
+      console.log(result.rows);
+      if (result.rows.length !== 0) {
+        return result.rows;
       } else {
-        return res.rows;
+        return db
+          .query(`SELECT * FROM reviews WHERE review_id = $1`, [id])
+          .then((res) => {
+            console.log(res.rows);
+            if (res.rows.length === 0) {
+              return Promise.reject({
+                status: 404,
+                message: "Review not found!",
+              });
+            } else {
+              return res.rows;
+            }
+          });
       }
     });
 };
