@@ -89,7 +89,7 @@ describe("GET /api/reviews", () => {
         .get("/api/reviews?category=children's games")
         .expect(200)
         .then((result) => {
-          expect(result.body).toEqual([]);
+          expect(result.body.reviews).toEqual([]);
         });
     });
 
