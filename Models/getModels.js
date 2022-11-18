@@ -2,6 +2,7 @@ const db = require("../db/connection");
 const {
   convertTimestampToDate,
   doesReviewExist,
+  doesCategoryExist,
 } = require("../db/seeds/utils");
 
 const { readFile } = require("fs/promises");
@@ -24,13 +25,48 @@ exports.selectCategories = () => {
     });
 };
 
-exports.selectReviews = () => {
-  return db
-    .query(
-      `
-      SELECT *, COUNT(review_id) AS comment_count FROM reviews group by review_id;
-  `,
-    )
+exports.selectReviews = (categories, sortBy = "created_at", order = "DESC") => {
+  return doesCategoryExist(categories)
+    .then(() => {
+      const sortAllowed = [
+        "owner",
+        "title",
+        "review_id",
+        "category",
+        "review_img_url",
+        "review_body",
+        "created_at",
+        "votes",
+        "designer",
+        "comment_count",
+        "default",
+      ];
+      const orderAllowed = ["ASC", "DESC"];
+
+      const queries = [];
+      let queryString =
+        "SELECT *, COUNT(review_id) AS comment_count FROM reviews ";
+
+      if (categories) {
+        queryString += "WHERE category = $1 ";
+        queries.push(categories);
+      }
+
+      queryString += "GROUP BY review_id ";
+
+      if (!sortAllowed.includes(sortBy)) {
+        return Promise.reject({ status: 400, message: "invalid query" });
+      }
+      queryString += `ORDER BY ${sortBy} `;
+
+      if (!orderAllowed.includes(order)) {
+        return Promise.reject({ status: 400, message: "invalid query" });
+      }
+
+      queryString += `${order} `;
+
+      return db.query(queryString, queries);
+    })
     .then((results) => {
       return results.rows;
     });

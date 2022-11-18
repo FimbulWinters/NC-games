@@ -1,5 +1,8 @@
 const express = require("express");
+
+
 const { deleteCommentById } = require("./Controllers/deleteController");
+
 const { catchAll, customErrors } = require("./Controllers/errorsController");
 const {
   getCategories,

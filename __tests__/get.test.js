@@ -64,7 +64,7 @@ describe("GET /api/reviews", () => {
         expect(result.body.reviews).toBeInstanceOf(Array);
         expect(result.body.reviews.length).toBeGreaterThan(0);
         result.body.reviews.forEach((reviews) => {
-          expect(reviews).toEqual({
+          expect(reviews).toMatchObject({
             owner: expect.any(String),
             title: expect.any(String),
             review_id: expect.any(Number),
@@ -78,6 +78,144 @@ describe("GET /api/reviews", () => {
           });
         });
       });
+  });
+  describe("queries", () => {
+    test("categories", () => {
+      return request(app)
+        .get("/api/reviews?category=dexterity")
+        .expect(200)
+        .then((result) => {
+          expect(result.body.reviews.length).toBeGreaterThan(0);
+          result.body.reviews.forEach((reviews) => {
+            expect(reviews).toMatchObject({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: "dexterity",
+              review_img_url: expect.any(String),
+              review_body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(String),
+            });
+          });
+        });
+    });
+    test("200 category exists but has no reviews associated", () => {
+      return request(app)
+        .get("/api/reviews?category=children's games")
+        .expect(200)
+        .then((result) => {
+          expect(result.body.reviews).toEqual([]);
+        });
+    });
+
+    describe("sort_by", () => {
+      test("shoudl default to created_at", () => {
+        return request(app)
+          .get("/api/reviews?")
+          .expect(200)
+          .then((result) => {
+            expect(result.body.reviews.length).toBeGreaterThan(0);
+            expect(result.body.reviews[0]).toMatchObject({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: 7,
+              category: expect.any(String),
+              review_img_url: expect.any(String),
+              review_body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(String),
+            });
+          });
+      });
+      test("sort_by", () => {
+        return request(app)
+          .get("/api/reviews?sort_by=owner")
+          .expect(200)
+          .then((result) => {
+            expect(result.body.reviews.length).toBeGreaterThan(0);
+            expect(result.body.reviews[0]).toMatchObject({
+              owner: "philippaclaire9",
+              title: expect.any(String),
+              review_id: 2,
+              category: expect.any(String),
+              review_img_url: expect.any(String),
+              review_body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(String),
+            });
+          });
+      });
+    });
+    describe("order", () => {
+      test("default order", () => {
+        return request(app)
+          .get("/api/reviews")
+          .expect(200)
+          .then((result) => {
+            expect(result.body.reviews.length).toBeGreaterThan(0);
+            expect(result.body.reviews).toBeSorted({ descending: true });
+          });
+      });
+      test("should sort in ascending order", () => {
+        return request(app)
+          .get("/api/reviews?order=ASC")
+          .expect(200)
+          .then((result) => {
+            expect(result.body.reviews.length).toBeGreaterThan(0);
+            expect(result.body.reviews).toBeSortedBy("created_at");
+          });
+      });
+    });
+    describe("combination of sort and order", () => {
+      test("query shoudl run when sort and order params are combined", () => {
+        return request(app)
+          .get("/api/reviews?sort_by=review_id&order=ASC")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.reviews).toBeSortedBy("review_id");
+          });
+      });
+    });
+  });
+  describe("errors", () => {
+    describe("categories", () => {
+      test("return 400 when category provided doesnt exist", () => {
+        return request(app)
+          .get("/api/reviews?category=aubergine")
+          .expect(400)
+          .then((result) => {
+            expect(result.body.message).toBe("Category not found");
+          });
+      });
+      // Not valid test not required as it will be stringified anyway, and thus will always be valid
+    });
+    describe("sort by", () => {
+      test("400: sort by invalid column name", () => {
+        return request(app)
+          .get("/api/reviews?sort_by=aubergine")
+          .expect(400)
+          .then((result) => {
+            expect(result.body.message).toBe("invalid query");
+          });
+      });
+    });
+    describe("400 order by", () => {
+      test("400 order by anything by asc or desc", () => {
+        return request(app)
+          .get("/api/reviews?order=aubergine")
+          .expect(400)
+          .then((result) => {
+            expect(result.body.message).toBe("invalid query");
+          });
+      });
+    });
   });
 });
 
