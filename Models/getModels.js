@@ -68,7 +68,6 @@ exports.selectReviews = (categories, sortBy, order, query) => {
           queryString += `ORDER BY review_id DESC`;
         }
       }
-      console.log(queryString);
 
       return db.query(queryString, queries);
     })
