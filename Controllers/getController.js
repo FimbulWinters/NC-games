@@ -4,7 +4,14 @@ const {
   selectReviewById,
   selectCommentsByReviewId,
   selectUsers,
+  getAPIInfo,
 } = require("../Models/getModels");
+
+exports.getAPI = (req, res) => {
+  getAPIInfo().then((contents) => {
+    res.send({ contents });
+  });
+};
 
 exports.getCategories = (req, res) => {
   selectCategories()

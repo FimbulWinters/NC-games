@@ -7,6 +7,24 @@ const db = require("../db/connection.js");
 beforeEach(() => seed(data));
 afterAll(() => db.end());
 
+describe("GET /api", () => {
+  test("should return details of endpoints available", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((contents) => {
+        const information = JSON.parse(contents.text);
+
+        for (endpoint in information.contents) {
+          let key = endpoint;
+          expect(information.contents[key]).toMatchObject({
+            description: expect.any(String),
+          });
+        }
+      });
+  });
+});
+
 describe("bad paths", () => {
   test("GET 404 return 404 on invalid url", () => {
     return request(app)

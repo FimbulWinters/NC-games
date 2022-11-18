@@ -1,5 +1,8 @@
 const express = require("express");
 
+
+const { deleteCommentById } = require("./Controllers/deleteController");
+
 const { catchAll, customErrors } = require("./Controllers/errorsController");
 const {
   getCategories,
@@ -7,6 +10,7 @@ const {
   getReviewById,
   getCommentsByReviewID,
   getUsers,
+  getAPI,
 } = require("./Controllers/getController");
 
 const { patchReviewVotes } = require("./Controllers/patchController");
@@ -16,6 +20,8 @@ const app = express();
 app.use(express.json());
 
 // GET
+
+app.get("/api", getAPI);
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
@@ -28,6 +34,9 @@ app.patch("/api/reviews/:review_id", patchReviewVotes);
 
 // POST
 app.post("/api/reviews/:review_id/comments", postCommentToReview);
+
+// DELETE
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 // all others
 
