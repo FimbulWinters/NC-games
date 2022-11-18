@@ -17,7 +17,7 @@ exports.selectCategories = () => {
     });
 };
 
-exports.selectReviews = (categories, sortBy, order, query) => {
+exports.selectReviews = (categories, sortBy = "created_at", order = "DESC") => {
   return doesCategoryExist(categories)
     .then(() => {
       const sortAllowed = [
@@ -33,7 +33,7 @@ exports.selectReviews = (categories, sortBy, order, query) => {
         "comment_count",
         "default",
       ];
-      const orderAllowed = ["asc", "desc"];
+      const orderAllowed = ["ASC", "DESC"];
 
       const queries = [];
       let queryString =
@@ -46,28 +46,18 @@ exports.selectReviews = (categories, sortBy, order, query) => {
 
       queryString += "GROUP BY review_id ";
 
-      if (sortBy) {
-        if (!sortAllowed.includes(sortBy)) {
-          return Promise.reject({ status: 400, message: "invalid query" });
-        } else {
-          if (sortBy !== "default") {
-            queryString += `ORDER BY ${sortBy} DESC`;
-          } else {
-            queryString += `ORDER BY created_at DESC`;
-          }
-        }
+      if (!sortAllowed.includes(sortBy)) {
+        return Promise.reject({ status: 400, message: "invalid query" });
+      }
+      queryString += `ORDER BY ${sortBy} `;
+
+      if (!orderAllowed.includes(order)) {
+        return Promise.reject({ status: 400, message: "invalid query" });
       }
 
-      if (order) {
-        if (!orderAllowed.includes(order)) {
-          return Promise.reject({ status: 400, message: "invalid query" });
-        }
-        queryString += `ORDER BY review_id ${order.toUpperCase()}`;
-      } else {
-        if (!sortBy) {
-          queryString += `ORDER BY review_id DESC`;
-        }
-      }
+      queryString += `${order} `;
+
+      console.log(queryString);
 
       return db.query(queryString, queries);
     })

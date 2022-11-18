@@ -96,7 +96,7 @@ describe("GET /api/reviews", () => {
     describe("sort_by", () => {
       test("shoudl default to created_at", () => {
         return request(app)
-          .get("/api/reviews?sort_by=default")
+          .get("/api/reviews?")
           .expect(200)
           .then((result) => {
             expect(result.body.reviews.length).toBeGreaterThan(0);
@@ -142,27 +142,16 @@ describe("GET /api/reviews", () => {
           .expect(200)
           .then((result) => {
             expect(result.body.reviews.length).toBeGreaterThan(0);
-            expect(result.body.reviews[0]).toMatchObject({
-              owner: expect.any(String),
-              title: expect.any(String),
-              review_id: 13,
-              category: expect.any(String),
-              review_img_url: expect.any(String),
-              review_body: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              designer: expect.any(String),
-              comment_count: expect.any(String),
-            });
+            expect(result.body.reviews).toBeSorted({ descending: true });
           });
       });
       test("should sort in ascending order", () => {
         return request(app)
-          .get("/api/reviews?order=asc")
+          .get("/api/reviews?order=ASC")
           .expect(200)
           .then((result) => {
             expect(result.body.reviews.length).toBeGreaterThan(0);
-            expect(result.body.reviews).toBeSortedBy("review_id");
+            expect(result.body.reviews).toBeSortedBy("created_at");
           });
       });
     });
