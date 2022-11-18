@@ -4,6 +4,14 @@ const {
   doesReviewExist,
 } = require("../db/seeds/utils");
 
+const { readFile } = require("fs/promises");
+
+exports.getAPIInfo = () => {
+  return readFile("./endpoints.json", "utf-8").then((contents) => {
+    return JSON.parse(contents);
+  });
+};
+
 exports.selectCategories = () => {
   return db
     .query(
