@@ -155,6 +155,16 @@ describe("GET /api/reviews", () => {
           });
       });
     });
+    describe("combination of sort and order", () => {
+      test("query shoudl run when sort and order params are combined", () => {
+        return request(app)
+          .get("/api/reviews?sort_by=review_id&order=ASC")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.reviews).toBeSortedBy("review_id");
+          });
+      });
+    });
   });
   describe("errors", () => {
     describe("categories", () => {
