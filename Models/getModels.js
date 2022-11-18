@@ -57,8 +57,6 @@ exports.selectReviews = (categories, sortBy = "created_at", order = "DESC") => {
 
       queryString += `${order} `;
 
-      console.log(queryString);
-
       return db.query(queryString, queries);
     })
     .then((results) => {
