@@ -51,9 +51,9 @@ exports.selectReviews = (categories, sortBy, order, query) => {
           return Promise.reject({ status: 400, message: "invalid query" });
         } else {
           if (sortBy !== "default") {
-            queryString += `ORDER BY ${sortBy}`;
+            queryString += `ORDER BY ${sortBy} DESC`;
           } else {
-            queryString += `ORDER BY created_at;`;
+            queryString += `ORDER BY created_at DESC`;
           }
         }
       }
@@ -63,7 +63,12 @@ exports.selectReviews = (categories, sortBy, order, query) => {
           return Promise.reject({ status: 400, message: "invalid query" });
         }
         queryString += `ORDER BY review_id ${order.toUpperCase()}`;
+      } else {
+        if (!sortBy) {
+          queryString += `ORDER BY review_id DESC`;
+        }
       }
+      console.log(queryString);
 
       return db.query(queryString, queries);
     })

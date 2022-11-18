@@ -103,7 +103,7 @@ describe("GET /api/reviews", () => {
             expect(result.body.reviews[0]).toMatchObject({
               owner: expect.any(String),
               title: expect.any(String),
-              review_id: 13,
+              review_id: 7,
               category: expect.any(String),
               review_img_url: expect.any(String),
               review_body: expect.any(String),
@@ -121,9 +121,9 @@ describe("GET /api/reviews", () => {
           .then((result) => {
             expect(result.body.reviews.length).toBeGreaterThan(0);
             expect(result.body.reviews[0]).toMatchObject({
-              owner: "bainesface",
+              owner: "philippaclaire9",
               title: expect.any(String),
-              review_id: 3,
+              review_id: 2,
               category: expect.any(String),
               review_img_url: expect.any(String),
               review_body: expect.any(String),
@@ -138,7 +138,7 @@ describe("GET /api/reviews", () => {
     describe("order", () => {
       test("default order", () => {
         return request(app)
-          .get("/api/reviews?order=desc")
+          .get("/api/reviews")
           .expect(200)
           .then((result) => {
             expect(result.body.reviews.length).toBeGreaterThan(0);
@@ -162,18 +162,7 @@ describe("GET /api/reviews", () => {
           .expect(200)
           .then((result) => {
             expect(result.body.reviews.length).toBeGreaterThan(0);
-            expect(result.body.reviews[0]).toMatchObject({
-              owner: expect.any(String),
-              title: expect.any(String),
-              review_id: 1,
-              category: expect.any(String),
-              review_img_url: expect.any(String),
-              review_body: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              designer: expect.any(String),
-              comment_count: expect.any(String),
-            });
+            expect(result.body.reviews).toBeSortedBy("review_id");
           });
       });
     });
