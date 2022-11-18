@@ -1,4 +1,5 @@
 const express = require("express");
+const { deleteCommentById } = require("./Controllers/deleteController");
 const { catchAll, customErrors } = require("./Controllers/errorsController");
 const {
   getCategories,
@@ -22,12 +23,14 @@ app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewID);
 app.get("/api/users", getUsers);
 
-
 // PATCH
 app.patch("/api/reviews/:review_id", patchReviewVotes);
 
 // POST
 app.post("/api/reviews/:review_id/comments", postCommentToReview);
+
+// DELETE
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 // all others
 
