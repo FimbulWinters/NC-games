@@ -25,4 +25,22 @@ describe("DELETE api/comments/:comment_id", () => {
         });
     });
   });
+  describe("errors", () => {
+    test(" 404 valid id but it doesnt exist", () => {
+      return request(app)
+        .delete("/api/comments/568974")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("Comment not found");
+        });
+    });
+    test("400 invalid id given", () => {
+      return request(app)
+        .delete("/api/comments/apiricots")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Bad request!");
+        });
+    });
+  });
 });
